@@ -1,7 +1,13 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
 import '../models/product.dart';
 
 class ProductRepository {
   const ProductRepository();
+
+  static final Uri _productsUri = Uri.parse('https://fakestoreapi.com/products');
 
   static const List<Map<String, dynamic>> _mockData = [
     {
@@ -12,6 +18,7 @@ class ProductRepository {
       'price': 1499.90,
       'imageUrl': 'https://picsum.photos/id/180/400/300',
       'category': 'Elektronik',
+      'rating': {'rate': 4.6, 'count': 148},
     },
     {
       'id': 2,
@@ -21,6 +28,7 @@ class ProductRepository {
       'price': 2199.50,
       'imageUrl': 'https://picsum.photos/id/26/400/300',
       'category': 'Giyilebilir',
+      'rating': {'rate': 4.3, 'count': 89},
     },
     {
       'id': 3,
@@ -30,6 +38,7 @@ class ProductRepository {
       'price': 1799.00,
       'imageUrl': 'https://picsum.photos/id/0/400/300',
       'category': 'Bilgisayar',
+      'rating': {'rate': 4.8, 'count': 212},
     },
     {
       'id': 4,
@@ -39,6 +48,7 @@ class ProductRepository {
       'price': 999.99,
       'imageUrl': 'https://picsum.photos/id/1080/400/300',
       'category': 'Ses',
+      'rating': {'rate': 4.4, 'count': 76},
     },
     {
       'id': 5,
@@ -48,6 +58,7 @@ class ProductRepository {
       'price': 649.90,
       'imageUrl': 'https://picsum.photos/id/160/400/300',
       'category': 'Aksesuar',
+      'rating': {'rate': 4.0, 'count': 53},
     },
     {
       'id': 6,
@@ -57,10 +68,20 @@ class ProductRepository {
       'price': 799.00,
       'imageUrl': 'https://picsum.photos/id/119/400/300',
       'category': 'Bilgisayar',
+      'rating': {'rate': 4.5, 'count': 132},
     },
   ];
 
-  List<Product> getProducts() {
+  Future<List<Product>> getProducts() async {
+    try {
+      final response = await http.get(_productsUri);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List<dynamic>;
+        return data
+            .map((item) => Product.fromJson(item as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (_) {}
     return _mockData.map(Product.fromJson).toList();
   }
 }
