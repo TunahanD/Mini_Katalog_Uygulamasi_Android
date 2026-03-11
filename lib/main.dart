@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'models/product.dart';
+import 'screens/cart_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/product_detail_screen.dart';
 
@@ -33,6 +34,17 @@ class MyApp extends StatelessWidget {
           final product = settings.arguments as Product;
           return MaterialPageRoute(
             builder: (_) => ProductDetailScreen(product: product),
+            settings: settings,
+          );
+        }
+        if (settings.name == '/cart') {
+          final args = settings.arguments as CartScreenArgs;
+          return MaterialPageRoute(
+            builder: (_) => CartScreen(
+              products: args.products,
+              initialCartProductIds: args.initialCartProductIds,
+              onToggleCart: args.onToggleCart,
+            ),
             settings: settings,
           );
         }
