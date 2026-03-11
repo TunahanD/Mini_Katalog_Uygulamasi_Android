@@ -13,15 +13,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ProductRepository _productRepository = const ProductRepository();
+  final Set<int> _cartProductIds = <int>{};
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
     final products = _productRepository.getProducts();
+    final filteredProducts = products.where((product) {
+      final query = _searchQuery.toLowerCase().trim();
+      if (query.isEmpty) {
+        return true;
+      }
+      return product.title.toLowerCase().contains(query) ||
+          product.category.toLowerCase().contains(query);
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mini Katalog'),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Badge(
+              label: Text(_cartProductIds.length.toString()),
+              isLabelVisible: _cartProductIds.isNotEmpty,
+              child: const Icon(Icons.shopping_cart_outlined),
+            ),
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -80,16 +100,36 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 16),
+          TextField(
+            onChanged: (value) => setState(() => _searchQuery = value),
+            decoration: InputDecoration(
+              hintText: 'Ürün veya kategori ara',
+              prefixIcon: const Icon(Icons.search),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(14),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           const Text(
             'Ürünler',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
-          ...products.map(
+          if (filteredProducts.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 12),
+              child: Text('Aramaya uygun ürün bulunamadı.'),
+            ),
+          ...filteredProducts.map(
             (product) => Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: ProductCard(
                 product: product,
+                isInCart: _cartProductIds.contains(product.id),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -97,6 +137,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context) => ProductDetailScreen(product: product),
                     ),
                   );
+                },
+                onAddToCart: () {
+                  setState(() {
+                    if (_cartProductIds.contains(product.id)) {
+                      _cartProductIds.remove(product.id);
+                    } else {
+                      _cartProductIds.add(product.id);
+                    }
+                  });
                 },
               ),
             ),

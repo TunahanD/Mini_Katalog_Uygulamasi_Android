@@ -7,10 +7,14 @@ class ProductCard extends StatelessWidget {
     super.key,
     required this.product,
     required this.onTap,
+    required this.onAddToCart,
+    required this.isInCart,
   });
 
   final Product product;
   final VoidCallback onTap;
+  final VoidCallback onAddToCart;
+  final bool isInCart;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +67,13 @@ class ProductCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right),
+              IconButton(
+                onPressed: onAddToCart,
+                icon: Icon(
+                  isInCart ? Icons.check_circle : Icons.add_shopping_cart,
+                  color: isInCart ? Colors.green : const Color(0xFF1E3A8A),
+                ),
+              ),
             ],
           ),
         ),
