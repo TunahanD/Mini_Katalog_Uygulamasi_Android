@@ -207,11 +207,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Fake Store API',
-                            style: TextStyle(color: Colors.white70),
-                          ),
-                          SizedBox(height: 6),
-                          Text(
                             'Ana Sayfa',
                             style: TextStyle(
                               color: Colors.white,
