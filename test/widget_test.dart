@@ -14,5 +14,6 @@ void main() {
     await tester.pumpWidget(const MyApp());
     expect(find.text('Mini Katalog'), findsWidgets);
     expect(find.text('Hoş geldin'), findsOneWidget);
+    expect(find.text('Kablosuz Kulaklık'), findsOneWidget);
   });
 }

@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../data/product_repository.dart';
+import '../screens/product_detail_screen.dart';
+import '../widgets/product_card.dart';
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ProductRepository _productRepository = const ProductRepository();
+
+  @override
   Widget build(BuildContext context) {
+    final products = _productRepository.getProducts();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mini Katalog'),
@@ -64,6 +77,28 @@ class HomeScreen extends StatelessWidget {
                   'Bir sonraki adımda ürünleri listeleyip detay sayfasına geçişi ekleyeceğiz.',
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Ürünler',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          ...products.map(
+            (product) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: ProductCard(
+                product: product,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetailScreen(product: product),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
