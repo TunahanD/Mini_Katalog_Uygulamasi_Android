@@ -19,6 +19,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final products = _productRepository.getProducts();
+    final cartProducts =
+        products.where((product) => _cartProductIds.contains(product.id)).toList();
+    final cartTotal = cartProducts.fold<double>(
+      0,
+      (total, product) => total + product.price,
+    );
     final filteredProducts = products.where((product) {
       final query = _searchQuery.toLowerCase().trim();
       if (query.isEmpty) {
@@ -94,7 +100,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'Bir sonraki adımda ürünleri listeleyip detay sayfasına geçişi ekleyeceğiz.',
+                  'Ürünleri ara, sepete ekle ve toplam tutarı anında takip et.',
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.shopping_bag_outlined, color: Color(0xFF1E3A8A)),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Sepette ${cartProducts.length} ürün',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                Text(
+                  '₺${cartTotal.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    color: Color(0xFF1E3A8A),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),

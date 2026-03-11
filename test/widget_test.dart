@@ -15,5 +15,6 @@ void main() {
     expect(find.text('Mini Katalog'), findsWidgets);
     expect(find.text('Hoş geldin'), findsOneWidget);
     expect(find.text('Kablosuz Kulaklık'), findsOneWidget);
+    expect(find.text('Sepette 0 ürün'), findsOneWidget);
   });
 }
